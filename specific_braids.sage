@@ -18,10 +18,10 @@ def matrix_to_mathematica(mat):
 		for j in range(0,mat.ncols()):
 			string = string + str(mat[i,j])
 			if (j < mat.ncols()-1):
-				string = string+","
+				string = string + ","
 		string = string + "}"
 		if (i < mat.nrows()-1):
-			string = string+","
+			string = string + ","
 	string = string + "}"
 	return string
 

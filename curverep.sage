@@ -139,7 +139,7 @@ def curve_rep(braid, drain_size, var='A', ring=IntegerRing()):
 	M = identity_matrix(R,dim_of_rep_space(n,d))
 	for i in braid.Tietze():
 		if i > 0:
-			M=M*rep[i-1]
+			M = M*rep[i-1]
 		if i < 0:
-			M=M*rep[-i-1]^(-1)
+			M = M*rep[-i-1]^(-1)
 	return M
