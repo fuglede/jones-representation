@@ -24,64 +24,64 @@ from sage.matrix.constructor import identity_matrix, matrix
 from sage.groups.braid import Braid, BraidGroup, BraidGroup_class
 
 
-def dim_of_rep_space(n,d):
-	if mod(n+d,2) == 1:
+def dim_of_rep_space(n, d):
+	if mod(n+d, 2) == 1:
 		raise ValueError("Arguments must have similar parity")
-	if mod(n,2) == 0:
-		k=n/2
-		g=k-1
-		m=(2*k-d)/2
-		return binomial(2*g+1,m)-binomial(2*g+1,m-2)
+	if mod(n, 2) == 0:
+		k = n/2
+		g = k-1
+		m = (2*k-d)/2
+		return binomial(2*g+1, m) - binomial(2*g+1, m-2)
 	else:
-		k=(n-1)/2
-		g=k
+		k = (n-1)/2
+		g = k
 		m = (2*k+1-d)/2
-		return binomial(2*g,m)-binomial(2*g,m-2)
+		return binomial(2*g, m) - binomial(2*g, m-2)
 
-def fill_out_forest(forest,treesize):
+def fill_out_forest(forest, treesize):
 	if len(forest) == 0:
 		raise ValueError("Forest has to start with a tree")
-	if mod(forest[0][0]+treesize,2) == 0:
+	if mod(forest[0][0]+treesize, 2) == 0:
 		raise ValueError("Parity mismatch in forest creation")
 	# Loop over all trees
 	newforest=copy(forest)
 	for tree in forest:
 		if len(tree) < treesize:
-			newtreeup=copy(tree)
-			newtreedown=copy(tree)
+			newtreeup = copy(tree)
+			newtreedown = copy(tree)
 			newforest.remove(tree) # Cut down the original tree
 			# Add two greater trees, admissibly
 			if tree[-1] < treesize - len(tree) + 1:
-				newtreeup.append(tree[-1]+1)
+				newtreeup.append(tree[-1] + 1)
 				newforest.append(newtreeup)
 			if tree[-1] > 0:
-				newtreedown.append(tree[-1]-1)
+				newtreedown.append(tree[-1] - 1)
 				newforest.append(newtreedown)
 	# Are we there yet?
-	if len(newforest) == dim_of_rep_space(treesize+1,forest[0][0]):
+	if len(newforest) == dim_of_rep_space(treesize + 1, forest[0][0]):
 		return newforest
 	else:
 		return fill_out_forest(newforest,treesize)
 
-def basis_with_drain(num_of_strands,drain_size):
-	n=num_of_strands
-	d=drain_size
+def basis_with_drain(num_of_strands, drain_size):
+	n = num_of_strands
+	d = drain_size
 	if mod(n+d,2) == 1:
 		raise ValueError("Arguments must have similar parity")
 	basis = [[d]] # Let's start out with no elements and recursively fill out
-	forest = fill_out_forest(basis,n-1)
+	forest = fill_out_forest(basis, n-1)
         for tree in forest:
 		tree.extend([1,0])
 	return forest
 
-def create_rep(num_of_strands,drain_size,variab='A',ring=IntegerRing()):
-	n=num_of_strands
-	d=drain_size
-	if mod(n+d,2) == 1:
+def create_rep(num_of_strands, drain_size, variab='A', ring=IntegerRing()):
+	n = num_of_strands
+	d = drain_size
+	if mod(n+d, 2) == 1:
 		raise ValueError("Arguments must have similar parity")
-	basis = basis_with_drain(n,d)
-	auxmat = matrix(n-1,len(basis))
-	for i in range(1,n):
+	basis = basis_with_drain(n, d)
+	auxmat = matrix(n-1, len(basis))
+	for i in range(1, n):
 		for v in range(len(basis)):
 			tree = basis[v]
 			if tree[i-1] < tree[i] and tree[i+1] < tree[i]:
@@ -113,30 +113,30 @@ def create_rep(num_of_strands,drain_size,variab='A',ring=IntegerRing()):
 				else:
 					auxmat[i-1,v] = -1
 	repmat = []
-	R = LaurentPolynomialRing(ring,variab)
+	R = LaurentPolynomialRing(ring, variab)
 	A = R.gens()[0]
-	for i in range(1,n):
-		repmatnew = identity_matrix(R,len(basis))
+	for i in range(1, n):
+		repmatnew = identity_matrix(R, len(basis))
 		for v in range(len(basis)):
-			newmatentry = auxmat[i-1,v]
+			newmatentry = auxmat[i-1, v]
 			if newmatentry == v:
-				repmatnew[v,v] = -A^4
+				repmatnew[v, v] = -A^4
 			elif newmatentry >= 0:
-				repmatnew[newmatentry,v] = A^2
+				repmatnew[newmatentry, v] = A^2
 		repmat.append(repmatnew)
 	return repmat
 
-def curve_rep(braid,drain_size,var='A',ring=IntegerRing()):
-	R = LaurentPolynomialRing(ring,var)
+def curve_rep(braid, drain_size, var='A', ring=IntegerRing()):
+	R = LaurentPolynomialRing(ring, var)
 	A = R.gens()[0]
-	n=braid.strands()
-	d=drain_size
+	n = braid.strands()
+	d = drain_size
 	# TODO: Make this part dynamic. For now, the entire
 	# representation is recalculated in every run. It's
 	# fast enough to not be a problem in many use cases,
 	# but it's still a bit silly.
-	rep=create_rep(n,d,var,ring)
-	M=identity_matrix(R,dim_of_rep_space(n,d))
+	rep = create_rep(n,d,var,ring)
+	M = identity_matrix(R,dim_of_rep_space(n,d))
 	for i in braid.Tietze():
 		if i > 0:
 			M=M*rep[i-1]
