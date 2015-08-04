@@ -59,7 +59,6 @@ def fill_out_forest(forest, treesize):
                 newtreedown.append(tree[-1] - 1)
                 newforest.append(newtreedown)
     # Are we there yet?
-    # if len(newforest) == dim_of_rep_space(treesize + 1, forest[0][0]):
     if len(newforest[0]) == treesize:
         return newforest
     else:
