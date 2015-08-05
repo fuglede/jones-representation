@@ -13,7 +13,7 @@
 #   sage: d = 1
 #   sage: B = BraidGroup(3)
 #   sage: b = B([1, -2])
-#   sage: b.curve_rep(d)
+#   sage: b.TL_matrix(d)
 #
 ###################################################
 
@@ -24,10 +24,13 @@ from sage.matrix.constructor import identity_matrix, matrix
 from sage.groups.braid import Braid, BraidGroup, BraidGroup_class
 
 
-def dim_of_TL_space(self, d):
+def dim_of_TL_space(self, drain_size):
     n = self.strands()
+    d = drain_size
+    if d > n:
+        raise ValueError("Number of drains may not exceed number of strands")
     if mod(n+d, 2) == 1:
-        raise ValueError("Drain size must have same parity as number of strands")
+        raise ValueError("Parity of strands and drains must agree")
     if mod(n, 2) == 0:
         k = n/2
         g = k-1
@@ -38,8 +41,10 @@ def dim_of_TL_space(self, d):
         g = k
         m = (2*k+1-d)/2
         return binomial(2*g, m) - binomial(2*g, m-2)
+BraidGroup_class.dim_of_TL_space = dim_of_TL_space
 
-def basis_with_drain(self, drain_size):
+
+def TL_basis_with_drain(self, drain_size):
     def fill_out_forest(forest, treesize):
         if len(forest) == 0:
             raise ValueError("Forest has to start with a tree")
@@ -67,21 +72,22 @@ def basis_with_drain(self, drain_size):
 
     n = self.strands()
     d = drain_size
+    if d > n:
+        raise ValueError("Number of drains may not exceed number of strands")
     if mod(n+d, 2) == 1:
-        raise ValueError("Drain size must have same parity as number of strands")
+        raise ValueError("Parity of strands and drains must agree")
     basis = [[d]]  # Let's start out with no elements and recursively fill out
     forest = fill_out_forest(basis, n-1)
     for tree in forest:
         tree.extend([1, 0])
     return forest
+BraidGroup_class.TL_basis_with_drain = TL_basis_with_drain
 
 
-def create_rep(self, drain_size, variab='A', ring=IntegerRing()):
+def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
     n = self.strands()
     d = drain_size
-    if mod(n+d, 2) == 1:
-        raise ValueError("Drain size must have same parity as number of strands")
-    basis = self.basis_with_drain(d)
+    basis = self.TL_basis_with_drain(d)
     auxmat = matrix(n-1, len(basis))
     for i in range(1, n):
         for v in range(len(basis)):
@@ -127,9 +133,10 @@ def create_rep(self, drain_size, variab='A', ring=IntegerRing()):
                 repmatnew[newmatentry, v] = A**2
         repmat.append(repmatnew)
     return repmat
+BraidGroup_class.create_TL_rep = create_TL_rep
 
 
-def curve_rep(self, drain_size, var='A', ring=IntegerRing()):
+def TL_matrix(self, drain_size, var='A', ring=IntegerRing()):
     R = LaurentPolynomialRing(ring, var)
     A = R.gens()[0]
     n = self.strands()
@@ -139,7 +146,7 @@ def curve_rep(self, drain_size, var='A', ring=IntegerRing()):
     # fast enough to not be a problem in many use cases,
     # but it's still a bit silly.
     B = BraidGroup(n)
-    rep = B.create_rep(d, var, ring)
+    rep = B.create_TL_rep(d, var, ring)
     M = identity_matrix(R, B.dim_of_TL_space(d))
     for i in self.Tietze():
         if i > 0:
@@ -147,8 +154,55 @@ def curve_rep(self, drain_size, var='A', ring=IntegerRing()):
         if i < 0:
             M = M*rep[-i-1]**(-1)
     return M
+Braid.TL_matrix = TL_matrix
 
-Braid.curve_rep = curve_rep
-BraidGroup_class.dim_of_TL_space = dim_of_TL_space
-BraidGroup_class.basis_with_drain = basis_with_drain
-BraidGroup_class.create_rep = create_rep
+
+def exponent_sum(self):
+    tietze = self.Tietze()
+    return sum([sign(s) for s in tietze])
+Braid.exponent_sum = exponent_sum
+
+
+def components_in_closure(self):
+    n = self.strands()
+    perm = self.permutation()
+    cycles = perm.to_cycles(singletons=False)
+    return n-sum([len(c)-1 for c in cycles])
+Braid.components_in_closure = components_in_closure
+
+
+def markov_trace(self, variab='A', ring=IntegerRing()):
+    def qint(i, variab='A', ring=IntegerRing()):
+        R = LaurentPolynomialRing(ring, variab)
+        A = R.gens()[0]
+        return (A**(2*i) - A**(-2*i))/(A**2 - A**(-2))
+
+    def weighted_trace(b, d, variab='A', ring=IntegerRing()):
+        return qint(d+1, variab, ring)*b.TL_matrix(d, variab, ring).trace()
+
+    R = LaurentPolynomialRing(ring, variab)
+    A = R.gens()[0]
+    delta = -A**2 - A**(-2)
+    n = self.strands()
+    drains = [d for d in range(n+1) if mod(n+d, 2) == 0]
+    traces = [weighted_trace(self, d, variab, ring) for d in drains]
+    return sum(traces)/((-delta)**n)
+Braid.markov_trace = markov_trace
+
+
+def jones_polynomial(self, skein_variable=True):
+    variab = 'A'
+    ring = IntegerRing()
+    R = LaurentPolynomialRing(ring, variab)
+    A = R.gens()[0]
+    delta = -A**2 - A**(-2)
+    n = self.strands()
+    exp_sum = exponent_sum(self)
+    trace = self.markov_trace(variab, ring)
+    jones_pol = (-delta)**(n-1) * A**(2*exp_sum) * trace
+    jones_pol = jones_pol.factor().expand()
+    if skein_variable:
+        return jones_pol.subs(A=var('A')**(-1))
+    else:
+        return jones_pol.subs(A=-var('t')**(1/4))
+Braid.jones_polynomial = jones_polynomial
