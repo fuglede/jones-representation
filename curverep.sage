@@ -160,9 +160,6 @@ def TL_basis_with_drain(self, drain_size):
 BraidGroup_class.TL_basis_with_drain = TL_basis_with_drain
 
 
-BraidGroup_class.TL_rep = {}  # For storing the result of create_TL_rep
-
-
 def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
     """
     Calculate the matrices of the Temperley--Lieb--Jones representation of
@@ -208,8 +205,6 @@ def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
     """
     n = self.strands()
     d = drain_size
-    if d in self.TL_rep:
-        return self.TL_rep[d]
     basis = self.TL_basis_with_drain(d)
     auxmat = matrix(n-1, len(basis))
     for i in range(1, n):
@@ -255,7 +250,6 @@ def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
             elif newmatentry >= 0:
                 repmatnew[newmatentry, v] = A**2
         repmat.append(repmatnew)
-    self.TL_rep[d] = repmat
     return repmat
 BraidGroup_class.create_TL_rep = create_TL_rep
 
@@ -300,11 +294,10 @@ def TL_matrix(self, drain_size, variab='A', ring=IntegerRing()):
     A = R.gens()[0]
     n = self.strands()
     d = drain_size
-    # TODO: Make this part dynamic. For now, the entire
-    # representation is recalculated in every run. It's
-    # fast enough to not be a problem in many use cases,
-    # but it's still a bit silly.
     B = BraidGroup(n)
+    # It is worth noting that making create_TL_rep dynamic seems like it would
+    # provide for faster evaluation. In practice it appears not to, though,
+    # as create_TL_rep is significantly faster than matrix multiplication.
     rep = B.create_TL_rep(d, variab, ring)
     M = identity_matrix(R, B.dim_of_TL_space(d))
     for i in self.Tietze():
