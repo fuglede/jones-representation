@@ -11,28 +11,22 @@ of 'drains' (see [1]).
 This in turn may be used to easily calculate the Jones polynomial of the
 closure of a braid.
 
+EXAMPLES:
+
+    In the notation of [2], to calculate $\eta_A^{3,1}(\sigma_1 \sigma_2^{-1})$
+    one may proceed as follows::
+
+        sage: d = 1
+        sage: B = BraidGroup(3)
+        sage: b = B([1, -2])
+        sage: b.TL_matrix(d)
+        [(A^8 - A^4)/(-A^4)         A^2/(-A^4)]
+        [     (-A^2)/(-A^4)           1/(-A^4)]
+
 REFERENCES:
 
 - [1] https://math.berkeley.edu/~vfr/jones.pdf
 """
-###################################################
-#
-# Notes on usage:
-# The function curve_rep(b,d) returns the image
-# of b under the rescaled representation
-#   \sigma_i \mapsto A \eta_A^{n,d}(sigma_i)
-# Here, b is an element in B_n, using the existing
-# braid group implementation in sage.
-#
-# Example of use: To evaluate
-#   \eta_A^{3,1}(\sigma_1 \sigma_2^{-1})
-# use
-#   sage: d = 1
-#   sage: B = BraidGroup(3)
-#   sage: b = B([1, -2])
-#   sage: b.TL_matrix(d)
-#
-###################################################
 
 from sage.rings.integer import Integer
 from sage.rings.integer_ring import IntegerRing
