@@ -282,7 +282,7 @@ def TL_matrix(self, drain_size, variab='A', ring=IntegerRing()):
     The matrix of the TL representation of the braid.
 
         sage: B = BraidGroup(4)
-        sage: b = B([1,2,-3])
+        sage: b = B([1, 2, -3])
         sage: b.TL_matrix(0)
         [(A^8 - A^4)/(-A^4)         A^2/(-A^4)]
         [              -A^6                  0]
@@ -321,7 +321,7 @@ def exponent_sum(self):
     EXAMPLES::
 
         sage: B = BraidGroup(5)
-        sage: b = B([1,4,-3,2])
+        sage: b = B([1, 4, -3, 2])
         sage: b.exponent_sum()
         2
     """
@@ -341,7 +341,7 @@ def components_in_closure(self):
     EXAMPLES::
 
         sage: B = BraidGroup(5)
-        sage: b = B([1,-3])
+        sage: b = B([1, -3])
         sage: b.components_in_closure()
         3
     """
@@ -372,7 +372,7 @@ def markov_trace(self, variab='A', ring=IntegerRing()):
     EXAMPLES::
 
         sage: B = BraidGroup(4)
-        sage: b = B([1,2,-3])
+        sage: b = B([1, 2, -3])
         sage: b.markov_trace().factor()
         (A^4) * (A^4 + 1)^-3
 
@@ -426,22 +426,22 @@ def jones_polynomial(self, skein_variable=True):
     The unknot::
 
         sage: B = BraidGroup(9)
-        sage: b = B([1,2,3,4,5,6,7,8])
+        sage: b = B([1, 2, 3, 4, 5, 6, 7, 8])
         sage: b.jones_polynomial()
         1
 
     Two different representations of the trefoil and one of its mirror::
 
         sage: B = BraidGroup(2)
-        sage: b = B([1,1,1])
+        sage: b = B([1, 1, 1])
         sage: b.jones_polynomial()
         1/A^4 + 1/A^12 - 1/A^16
         sage: B = BraidGroup(3)
-        sage: b = B([1,2,1,2])
+        sage: b = B([1, 2, 1, 2])
         sage: b.jones_polynomial()
         1/A^4 + 1/A^12 - 1/A^16
         sage: B = BraidGroup(3)
-        sage: b = B([-1,-2,-1,-2])
+        sage: b = B([-1, -2, -1, -2])
         sage: b.jones_polynomial()
         -A^16 + A^12 + A^4
 
@@ -449,8 +449,8 @@ def jones_polynomial(self, skein_variable=True):
     mirror of the "Conway" knot)::
 
         sage: B = BraidGroup(4)
-        sage: b11n42 = B([1,-2,3,-2,3,-2,-2,-1,2,-3,-3,2,2])
-        sage: b11n34 = B([1,1,2,-3,2,-3,1,-2,-2,-3,-3])
+        sage: b11n42 = B([1, -2, 3, -2, 3, -2, -2, -1, 2, -3, -3, 2, 2])
+        sage: b11n34 = B([1, 1, 2, -3, 2, -3, 1, -2, -2, -3, -3])
         sage: cmp(b11n42.jones_polynomial(), b11n34.jones_polynomial())
         0
 
