@@ -13,7 +13,7 @@
 #   sage: d = 1
 #   sage: B = BraidGroup(3)
 #   sage: b = B([1, -2])
-#   sage: curve_rep(b, d)
+#   sage: b.curve_rep(d)
 #
 ###################################################
 
