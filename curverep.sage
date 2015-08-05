@@ -430,7 +430,8 @@ def jones_polynomial(self, skein_variable=True):
         sage: b.jones_polynomial()
         1
 
-    Two different representations of the trefoil::
+    Two different representations of the trefoil and one of its mirror::
+
         sage: B = BraidGroup(2)
         sage: b = B([1,1,1])
         sage: b.jones_polynomial()
@@ -439,6 +440,10 @@ def jones_polynomial(self, skein_variable=True):
         sage: b = B([1,2,1,2])
         sage: b.jones_polynomial()
         1/A^4 + 1/A^12 - 1/A^16
+        sage: B = BraidGroup(3)
+        sage: b = B([-1,-2,-1,-2])
+        sage: b.jones_polynomial()
+        -A^16 + A^12 + A^4
 
     K11n42 (the mirror of the "Kinoshita-Terasaka" knot) and K11n34 (the
     mirror of the "Conway" knot)::
