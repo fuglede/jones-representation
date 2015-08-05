@@ -9,7 +9,7 @@ connecting (n+d) points, where n is the number of strands and d is a number
 of 'drains' (see [1]).
 
 This in turn may be used to easily calculate the Jones polynomial of the
-closure of a braid.
+trace closure of a braid.
 
 EXAMPLES:
 
@@ -23,9 +23,16 @@ EXAMPLES:
         [(A^8 - A^4)/(-A^4)         A^2/(-A^4)]
         [     (-A^2)/(-A^4)           1/(-A^4)]
 
+    The trace closure of this particular braid ``b``is the unknot whose Jones
+    polynomial may now be evaluated::
+
+        sage: b.jones_polynomial()
+        1
+
 REFERENCES:
 
 - [1] https://math.berkeley.edu/~vfr/jones.pdf
+- [2] http://front.math.ucdavis.edu/1402.6059
 """
 
 from sage.rings.integer import Integer
