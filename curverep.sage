@@ -23,7 +23,7 @@ EXAMPLES:
         [(A^8 - A^4)/(-A^4)         A^2/(-A^4)]
         [     (-A^2)/(-A^4)           1/(-A^4)]
 
-    The trace closure of this particular braid ``b``is the unknot whose Jones
+    The trace closure of this particular braid ``b`` is the unknot whose Jones
     polynomial may now be evaluated::
 
         sage: b.jones_polynomial()
