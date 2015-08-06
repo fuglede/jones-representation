@@ -60,10 +60,23 @@ def dim_of_TL_space(self, drain_size):
     The dimension of the representation corresponding to the number of drains
     given by ``drain_size``.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    Calculation of the dimension of the representation of $B_8$ corresponding
+    to having $2$ drains::
+
         sage: B = BraidGroup(8)
         sage: B.dim_of_TL_space(2)
         28
+
+    The direct sum of endomorphism spaces of these vector spaces make up the
+    entire Temperley--Lieb algebra::
+
+        sage: import sage.combinat.diagram_algebras as da
+        sage: B = BraidGroup(6)
+        sage: total_dim = sum([B.dim_of_TL_space(d)**2 for d in [0, 2, 4, 6]])
+        sage: total_dim == len(da.temperley_lieb_diagrams(6))
+        True
     """
     n = self.strands()
     d = drain_size
@@ -111,7 +124,10 @@ def TL_basis_with_drain(self, drain_size):
 
     A list of basis elements, each of which is a list of integers.
 
-    EXAMPLES::
+    EXAMPLES:
+
+    We calculate the basis for the appropriate vector space for $B_5$ when
+    $d = 3$::
 
         sage: B = BraidGroup(5)
         sage: B.TL_basis_with_drain(3)
@@ -119,6 +135,10 @@ def TL_basis_with_drain(self, drain_size):
          [3, 2, 3, 2, 1, 0],
          [3, 2, 1, 2, 1, 0],
          [3, 2, 1, 0, 1, 0]]
+
+    The number of basis elements hopefully correponds to the general formula
+    for the dimension of the representation spaces::
+
         sage: B = BraidGroup(10)
         sage: d = 2
         sage: B.dim_of_TL_space(d) == len(B.TL_basis_with_drain(d))
