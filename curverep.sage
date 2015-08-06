@@ -68,7 +68,7 @@ def dim_of_TL_space(self, drain_size):
     n = self.strands()
     d = drain_size
     if d > n:
-        raise ValueError("Number of drains may not exceed number of strands")
+        raise ValueError("Number of drains must not exceed number of strands")
     if mod(n+d, 2) == 1:
         raise ValueError("Parity of strands and drains must agree")
     if mod(n, 2) == 0:
@@ -119,6 +119,10 @@ def TL_basis_with_drain(self, drain_size):
          [3, 2, 3, 2, 1, 0],
          [3, 2, 1, 2, 1, 0],
          [3, 2, 1, 0, 1, 0]]
+        sage: B = BraidGroup(10)
+        sage: d = 2
+        sage: B.dim_of_TL_space(d) == len(B.TL_basis_with_drain(d))
+        True
 
     REFERENCES:
 
@@ -178,7 +182,8 @@ def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
     $1$ and $-A^4$, where $A$ is the generator of the Laurent polynomial ring.
 
     When $d = n-2$ and the variables are picked appropriately, the resulting
-    representation is equivalent to the reduced Burau representation.
+    representation is equivalent to the reduced Burau representation. When
+    $d = n$, the resulting representation is trivial and 1-dimensional.
 
     Store the result of the calculation as part of the braid group.
 
@@ -203,6 +208,14 @@ def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
         [   1    0]  [-A^4  A^2]  [   1    0]
         [ A^2 -A^4], [   0    1], [ A^2 -A^4]
         ]
+        sage: B.create_TL_rep(0, ring=GF(2))
+        [
+        [   1    0]  [-A^4 -A^2]  [   1    0]
+        [-A^2 -A^4], [   0    1], [-A^2 -A^4]
+        ]
+        sage: B = BraidGroup(8)
+        sage: B.create_TL_rep(8)
+        [[1], [1], [1], [1], [1], [1], [1]]
 
     REFERENCES:
 
@@ -286,11 +299,30 @@ def TL_matrix(self, drain_size, variab='A', ring=IntegerRing()):
 
     The matrix of the TL representation of the braid.
 
+
+    EXAMPLES:
+
+    Let us calculate a few examples for $B_4$ with $d = 0$::
+
         sage: B = BraidGroup(4)
         sage: b = B([1, 2, -3])
         sage: b.TL_matrix(0)
         [(A^8 - A^4)/(-A^4)         A^2/(-A^4)]
         [              -A^6                  0]
+        sage: 2*b.TL_matrix(0, ring=GF(2))
+        [0 0]
+        [0 0]
+        sage: b = B([])
+        sage: b.TL_matrix(0)
+        [1 0]
+        [0 1]
+
+    Test of one of the relations in $B_8$::
+
+        sage: B = BraidGroup(8)
+        sage: d = 0
+        sage: B([4,5,4]).TL_matrix(d) == B([5,4,5]).TL_matrix(d)
+        True
 
     REFERENCES:
 
@@ -330,6 +362,9 @@ def exponent_sum(self):
         sage: b = B([1, 4, -3, 2])
         sage: b.exponent_sum()
         2
+        sage: b = B([])
+        sage: b.exponent_sum()
+        0
     """
     tietze = self.Tietze()
     return sum([sign(s) for s in tietze])
@@ -342,14 +377,21 @@ def components_in_closure(self):
 
     OUTPUT:
 
-    Integer.
+    Positive integer.
 
     EXAMPLES::
 
         sage: B = BraidGroup(5)
-        sage: b = B([1, -3])
+        sage: b = B([1, -3])  # Three disjoint unknots
         sage: b.components_in_closure()
         3
+        sage: b = B([1, 2, 3, 4])  # The unknot
+        sage: b.components_in_closure()
+        1
+        sage: B = BraidGroup(4)
+        sage: K11n42 = B([1, -2, 3, -2, 3, -2, -2, -1, 2, -3, -3, 2, 2])
+        sage: K11n42.components_in_closure()
+        1
     """
     n = self.strands()
     perm = self.permutation()
@@ -438,20 +480,37 @@ def jones_polynomial(self, skein_variable=True):
         sage: b.jones_polynomial()
         1
 
+    Two unlinked unknots::
+    
+        sage: B = BraidGroup(2)
+        sage: b = B([])
+        sage: b.jones_polynomial()
+        -A^2 - 1/A^2
+
+    The Hopf link::
+    
+        sage: B = BraidGroup(2)
+        sage: b = B([-1,-1])
+        sage: b.jones_polynomial(skein_variable=False)
+        -1/sqrt(t) - 1/t^(5/2)
+
     Two different representations of the trefoil and one of its mirror::
 
         sage: B = BraidGroup(2)
-        sage: b = B([1, 1, 1])
+        sage: b = B([-1, -1, -1])
+        sage: b.jones_polynomial()
+        1/A^4 + 1/A^12 - 1/A^16
+        sage: b.jones_polynomial(skein_variable=False)
+        1/t + 1/t^3 - 1/t^4
+        sage: B = BraidGroup(3)
+        sage: b = B([-1, -2, -1, -2])
         sage: b.jones_polynomial()
         1/A^4 + 1/A^12 - 1/A^16
         sage: B = BraidGroup(3)
         sage: b = B([1, 2, 1, 2])
         sage: b.jones_polynomial()
-        1/A^4 + 1/A^12 - 1/A^16
-        sage: B = BraidGroup(3)
-        sage: b = B([-1, -2, -1, -2])
-        sage: b.jones_polynomial()
         -A^16 + A^12 + A^4
+        
 
     K11n42 (the mirror of the "Kinoshita-Terasaka" knot) and K11n34 (the
     mirror of the "Conway" knot)::
@@ -474,12 +533,13 @@ def jones_polynomial(self, skein_variable=True):
     A = R.gens()[0]
     delta = -A**2 - A**(-2)
     n = self.strands()
-    exp_sum = exponent_sum(self)
+    exp_sum = self.exponent_sum()
+    num_comp = self.components_in_closure()
     trace = self.markov_trace(variab, ring)
-    jones_pol = (-delta)**(n-1) * A**(2*exp_sum) * trace
+    jones_pol = (-1)**(num_comp-1) * (-delta)**(n-1) * A**(2*exp_sum) * trace
     jones_pol = jones_pol.factor().expand()
     if skein_variable:
-        return jones_pol.subs(A=var('A')**(-1))
+        return jones_pol.subs(A=var('A'))
     else:
-        return jones_pol.subs(A=-var('t')**(1/4))
+        return jones_pol.subs(A=var('t')**(1/4))
 Braid.jones_polynomial = jones_polynomial
