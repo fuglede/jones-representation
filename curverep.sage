@@ -6,15 +6,15 @@ actions on Temperley-Lieb (TL) algebras and in turn the irreducible
 representations of the TL algebras. The irreducible factors are given in terms
 of Kauffman's diagrammatic bases in which one considers non-crossing diagrams
 connecting (n+d) points, where n is the number of strands and d is a number
-of 'drains' (see [1]).
+of 'drains' (see [Jon]_).
 
 This in turn may be used to easily calculate the Jones polynomial of the
 trace closure of a braid.
 
 EXAMPLES:
 
-    In the notation of [2], to calculate $\eta_A^{3,1}(\sigma_1 \sigma_2^{-1})$
-    one may proceed as follows::
+    To calculate the matrix representation of, in the notation of [EJ]_,
+    $\eta_A^{3,1}(\sigma_1 \sigma_2^{-1})$, one may proceed as follows::
 
         sage: d = 1
         sage: B = BraidGroup(3)
@@ -23,7 +23,7 @@ EXAMPLES:
         [(A^8 - A^4)/(-A^4)         A^2/(-A^4)]
         [     (-A^2)/(-A^4)           1/(-A^4)]
 
-    The trace closure of this particular braid ``b``is the unknot whose Jones
+    The trace closure of this particular braid ``b`` is the unknot whose Jones
     polynomial may now be evaluated::
 
         sage: b.jones_polynomial()
@@ -31,8 +31,11 @@ EXAMPLES:
 
 REFERENCES:
 
-- [1] https://math.berkeley.edu/~vfr/jones.pdf
-- [2] http://front.math.ucdavis.edu/1402.6059
+- [Jon] Vaughan Jones. The Jones Polynomial.
+        https://math.berkeley.edu/~vfr/jones.pdf
+- [EJ] Jens Kristian Egsgaard and Søren Fuglede Jørgensen. The homological
+       content of the Jones representations at $q = -1$.
+       http://front.math.ucdavis.edu/1402.6059
 """
 
 from sage.rings.integer import Integer
@@ -91,10 +94,10 @@ def TL_basis_with_drain(self, drain_size):
 
     A basis element is specified as a list of integers obtained by considering
     the pairings as obtained as the 'highest term' of trivalent trees marked by
-    Jones--Wenzl projectors (see e.g. the reference below). In practice, this
-    is a list of non-negative integers whose first element is ``drain_size``,
-    whose last element is $0$, and satisfying that consecutive integers have
-    difference $1$. Moreover, the length of each basis element is $n+1$.
+    Jones--Wenzl projectors (see e.g. [Wan]_). In practice, this is a list of
+    non-negative integers whose first element is ``drain_size``, whose last
+    element is $0$, and satisfying that consecutive integers have difference
+    $1$. Moreover, the length of each basis element is $n+1$.
 
     Given these rules, the list of lists is constructed recursively in the
     natural way.
@@ -119,8 +122,8 @@ def TL_basis_with_drain(self, drain_size):
 
     REFERENCES:
 
-    - Zhenghan Wang. Tolological quantum computation. Providence, RI: American
-      Mathematical Society (AMS), 2010. ISBN 978-0-8218-4930-9
+    - [Wan] Zhenghan Wang. Tolological quantum computation. Providence,
+      RI: American Mathematical Society (AMS), 2010. ISBN 978-0-8218-4930-9
     """
     def fill_out_forest(forest, treesize):
         if len(forest) == 0:
@@ -202,7 +205,8 @@ def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
 
     REFERENCES:
 
-    - https://math.berkeley.edu/~vfr/jones.pdf
+    - [Jon] Vaughan Jones. The Jones Polynomial.
+            https://math.berkeley.edu/~vfr/jones.pdf
     """
     n = self.strands()
     d = drain_size
@@ -289,7 +293,8 @@ def TL_matrix(self, drain_size, variab='A', ring=IntegerRing()):
 
     REFERENCES:
 
-    - https://math.berkeley.edu/~vfr/jones.pdf
+    - [Jon] Vaughan Jones. The Jones Polynomial.
+            https://math.berkeley.edu/~vfr/jones.pdf
     """
     R = LaurentPolynomialRing(ring, variab)
     A = R.gens()[0]
@@ -378,7 +383,8 @@ def markov_trace(self, variab='A', ring=IntegerRing()):
 
     REFERENCES:
 
-    - https://math.berkeley.edu/~vfr/jones.pdf
+    - [Jon] Vaughan Jones. The Jones Polynomial.
+            https://math.berkeley.edu/~vfr/jones.pdf
     """
     def qint(i, variab='A', ring=IntegerRing()):
         R = LaurentPolynomialRing(ring, variab)
@@ -403,9 +409,10 @@ def jones_polynomial(self, skein_variable=True):
     Return the Jones polynomial of the trace closure of the braid, normalised
     so that the unknot has Jones polynomial $1$. If ``skein_variable'' is True,
     give the result in terms of a variable ``'A'`` so that the result agrees
-    with the conventions of [1] (which in particular differs slightly from the
-    conventions used otherwise in this class). If ``skein_variable'' is False,
-    return the result in terms of the variable ``'t'``, also used in [1].
+    with the conventions of [Lic]_ (which in particular differs slightly from
+    the conventions used otherwise in this class). If ``skein_variable'' is
+    False, return the result in terms of the variable ``'t'``, also used
+    in [Lic]_.
 
     The computation uses the representation of the braid group on the
     Temperley--Lieb algebra.
@@ -456,9 +463,9 @@ def jones_polynomial(self, skein_variable=True):
 
     REFERENCES:
 
-    - [1] William B. Raymond Lickorish. An introduction to knot theory, volume
-      175 of Graduate Texts in Mathematics. Springer-Verlag, New York, 1997.
-      ISBN 0-387-98254-X
+    - [Lic] William B. Raymond Lickorish. An introduction to knot theory,
+            volume 175 of Graduate Texts in Mathematics. Springer-Verlag, New
+            York, 1997. ISBN 0-387-98254-X
     """
     variab = 'A'
     ring = IntegerRing()
