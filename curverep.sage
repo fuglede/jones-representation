@@ -481,14 +481,14 @@ def jones_polynomial(self, skein_variable=True):
         1
 
     Two unlinked unknots::
-    
+
         sage: B = BraidGroup(2)
         sage: b = B([])
         sage: b.jones_polynomial()
         -A^2 - 1/A^2
 
     The Hopf link::
-    
+
         sage: B = BraidGroup(2)
         sage: b = B([-1,-1])
         sage: b.jones_polynomial(skein_variable=False)
@@ -510,7 +510,6 @@ def jones_polynomial(self, skein_variable=True):
         sage: b = B([1, 2, 1, 2])
         sage: b.jones_polynomial()
         -A^16 + A^12 + A^4
-        
 
     K11n42 (the mirror of the "Kinoshita-Terasaka" knot) and K11n34 (the
     mirror of the "Conway" knot)::
