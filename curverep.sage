@@ -33,9 +33,9 @@ REFERENCES:
 
 - [Jon] Vaughan Jones. The Jones Polynomial.
         https://math.berkeley.edu/~vfr/jones.pdf
-- [EJ] Jens Kristian Egsgaard and Søren Fuglede Jørgensen. The homological
-       content of the Jones representations at $q = -1$.
-       http://front.math.ucdavis.edu/1402.6059
+- [EJ]  Jens Kristian Egsgaard and Søren Fuglede Jørgensen. The homological
+        content of the Jones representations at $q = -1$.
+        http://front.math.ucdavis.edu/1402.6059
 """
 
 from sage.rings.integer import Integer
@@ -123,7 +123,8 @@ def TL_basis_with_drain(self, drain_size):
     REFERENCES:
 
     - [Wan] Zhenghan Wang. Tolological quantum computation. Providence,
-      RI: American Mathematical Society (AMS), 2010. ISBN 978-0-8218-4930-9
+            RI: American Mathematical Society (AMS), 2010.
+            ISBN 978-0-8218-4930-9
     """
     def fill_out_forest(forest, treesize):
         if len(forest) == 0:
@@ -463,7 +464,7 @@ def jones_polynomial(self, skein_variable=True):
 
     REFERENCES:
 
-    - [Lic] William B. Raymond Lickorish. An introduction to knot theory,
+    - [Lic] William B. Raymond Lickorish. An Introduction to Knot Theory,
             volume 175 of Graduate Texts in Mathematics. Springer-Verlag, New
             York, 1997. ISBN 0-387-98254-X
     """
