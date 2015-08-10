@@ -467,7 +467,7 @@ def markov_trace(self, variab='A', ring=IntegerRing()):
 Braid.markov_trace = markov_trace
 
 
-def jones_polynomial(self, skein_variable=True):
+def jones_polynomial(self, skein_variable=False):
     """
     Return the Jones polynomial of the trace closure of the braid, normalised
     so that the unknot has Jones polynomial $1$. If ``skein_variable'' is True,
@@ -482,7 +482,7 @@ def jones_polynomial(self, skein_variable=True):
 
     INPUT:
 
-    - ``skein_variable`` -- boolean (default: ``True``); determines the
+    - ``skein_variable`` -- boolean (default: ``False``); determines the
       variable of the resulting polynomial.
 
     OUTPUT:
@@ -497,38 +497,38 @@ def jones_polynomial(self, skein_variable=True):
 
         sage: B = BraidGroup(9)
         sage: b = B([1, 2, 3, 4, 5, 6, 7, 8])
-        sage: b.jones_polynomial()
+        sage: b.jones_polynomial(skein_variable=True)
         1
 
     Two unlinked unknots::
 
         sage: B = BraidGroup(2)
         sage: b = B([])
-        sage: b.jones_polynomial()
+        sage: b.jones_polynomial(skein_variable=True)
         -A^2 - 1/A^2
 
     The Hopf link::
 
         sage: B = BraidGroup(2)
         sage: b = B([-1,-1])
-        sage: b.jones_polynomial(skein_variable=False)
+        sage: b.jones_polynomial()
         -1/sqrt(t) - 1/t^(5/2)
 
     Two different representations of the trefoil and one of its mirror::
 
         sage: B = BraidGroup(2)
         sage: b = B([-1, -1, -1])
-        sage: b.jones_polynomial()
+        sage: b.jones_polynomial(skein_variable=True)
         1/A^4 + 1/A^12 - 1/A^16
-        sage: b.jones_polynomial(skein_variable=False)
+        sage: b.jones_polynomial()
         1/t + 1/t^3 - 1/t^4
         sage: B = BraidGroup(3)
         sage: b = B([-1, -2, -1, -2])
-        sage: b.jones_polynomial()
+        sage: b.jones_polynomial(skein_variable=True)
         1/A^4 + 1/A^12 - 1/A^16
         sage: B = BraidGroup(3)
         sage: b = B([1, 2, 1, 2])
-        sage: b.jones_polynomial()
+        sage: b.jones_polynomial(skein_variable=True)
         -A^16 + A^12 + A^4
 
     K11n42 (the mirror of the "Kinoshita-Terasaka" knot) and K11n34 (the
