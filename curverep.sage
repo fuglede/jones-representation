@@ -194,7 +194,7 @@ def create_TL_rep(self, drain_size, variab='A', ring=IntegerRing()):
     Calculate the matrices of the Temperley--Lieb--Jones representation of
     the standard generators of the braid groups in the basis given by
     non-intersecting pairings of $(n+d)$ points, where $n$ is the number of
-    strands, and $d$ is given by ``drain_size'', and the pairings satisfy
+    strands, and $d$ is given by ``drain_size``, and the pairings satisfy
     certain rules. This basis has the useful property that all resulting
     entries can be regarded as Laurent polynomials.
 
@@ -297,7 +297,7 @@ def TL_matrix(self, drain_size, variab='A', ring=IntegerRing()):
     """
     Calculate the matrices of the Temperley--Lieb--Jones representation of
     the braidin the basis given by non-intersecting pairings of $(n+d)$ points,
-    where $n$ is the number of strands, and $d$ is given by ``drain_size'',
+    where $n$ is the number of strands, and $d$ is given by ``drain_size``,
     and the pairings satisfy certain rules.
 
     We use the convention that the eigenvalues of the standard generators are
@@ -470,10 +470,10 @@ Braid.markov_trace = markov_trace
 def jones_polynomial(self, skein_variable=False):
     """
     Return the Jones polynomial of the trace closure of the braid, normalised
-    so that the unknot has Jones polynomial $1$. If ``skein_variable'' is True,
+    so that the unknot has Jones polynomial $1$. If ``skein_variable`` is True,
     give the result in terms of a variable ``'A'`` so that the result agrees
     with the conventions of [Lic]_ (which in particular differs slightly from
-    the conventions used otherwise in this class). If ``skein_variable'' is
+    the conventions used otherwise in this class). If ``skein_variable`` is
     False, return the result in terms of the variable ``'t'``, also used
     in [Lic]_.
 
